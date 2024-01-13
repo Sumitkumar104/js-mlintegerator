@@ -1,8 +1,10 @@
 const express = require("express");
 const fileupload = require("express-fileupload");
 const app = express();
+const cors = require('cors');
 require("dotenv").config();
 
+app.use(cors());
 app.use(express.json());
 app.use(fileupload({
     useTempFiles : true,

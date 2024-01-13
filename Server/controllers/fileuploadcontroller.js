@@ -6,6 +6,9 @@ exports.fileupload = async(req,res)=>{
         const path = __dirname + "/" + datafile.name;
         datafile.mv(path, {}) 
         console.log("file is successfully added");
+        return res.status(200).json({
+            success:true
+        })
 
     }
     catch (err) {

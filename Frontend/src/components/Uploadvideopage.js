@@ -1,11 +1,13 @@
+
 import { React, useState } from 'react'
 import axios from 'axios'
+import { useNavigate } from 'react-router-dom';
 
 function Uploadvideopage() {
 
   const [selectedFile, setSelectedFile] = useState(null);
   const [fileFormatError, setFileFormatError] = useState(false);
-
+  const navigate = useNavigate();
 
   const handleFileChange = (event) => {
     const file = event.target.files[0];
@@ -16,13 +18,11 @@ function Uploadvideopage() {
       const videodatatype = file.name.split(".")[1].toLowerCase();
       // Check the file format (e.g., allow only image files)
       const allowedFormats = ["mp4"];
-      if (allowedFormats.includes(videodatatype)) 
-      {
+      if (allowedFormats.includes(videodatatype)) {
         setSelectedFile(file);
         setFileFormatError(false);
       }
-       else
-       {
+      else {
         setSelectedFile(null);
         setFileFormatError(true);
       }
@@ -30,21 +30,30 @@ function Uploadvideopage() {
   };
 
 
-  const handleFileUpload = () => {
+  const handleFileUpload = async () => {
     if (selectedFile) {
-      // Upload the file content to the backend
-      const formData = new FormData();
-      formData.append('file', selectedFile);
+      try {
+        // Upload the file content to the backend
+        const formData = new FormData();
+        formData.append('file', selectedFile);
 
-      const response=axios.post('http://localhost:4000/fileupload', formData)
-        .then(() => {
-          console.log('File uploaded successfully:',response);
-        })
-        .catch((error) => {
-          console.error('Error uploading file:', error);
-        });
+        const response = await axios.post('http://localhost:4000/fileupload', formData);
+        console.log('File uploaded successfully');
+
+        if (response.data !== null) {
+          
+          navigate('/Analysis'); 
+        } else {
+          console.log('Response is null');
+        }
+
+
+      } catch (err) {
+        console.log("there is some error to post video in backend ", err);
+      }
+
     }
-    else{
+    else {
       console.log("first choose a file")
     }
   };
